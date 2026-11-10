@@ -12,34 +12,14 @@
     
 
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Object Properties
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
+    <!-- Object Properties -->
 
-    
+    <!-- http://www.semanticweb.org/lab1/games#countryOf -->
 
-
-    <!-- http://www.semanticweb.org/lab1/games#developedBy -->
-
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#developedBy">
-        <owl:inverseOf rdf:resource="http://www.semanticweb.org/lab1/games#developerOf"/>
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <rdfs:range rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
-        <rdfs:comment xml:lang="ru">Prolog: developed_by/2</rdfs:comment>
-    </owl:ObjectProperty>
-    
-
-
-    <!-- http://www.semanticweb.org/lab1/games#developerOf -->
-
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#developerOf">
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#countryOf">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
         <rdfs:range rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <rdfs:comment xml:lang="ru">Обратное к developedBy</rdfs:comment>
+        <rdfs:comment xml:lang="ru">Обратное к madeIn</rdfs:comment>
     </owl:ObjectProperty>
     
 
@@ -54,51 +34,79 @@
     
 
 
-    <!-- http://www.semanticweb.org/lab1/games#sameDeveloperAs -->
+    <!-- http://www.semanticweb.org/lab1/games#madeIn -->
 
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#sameDeveloperAs">
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#madeIn">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/lab1/games#countryOf"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
+        <rdfs:comment xml:lang="ru">Prolog: made_in/2</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/lab1/games#makesGenre -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#makesGenre">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/lab1/games#Genre"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#countryOf"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#hasGenre"/>
+        </owl:propertyChainAxiom>
+        <rdfs:comment xml:lang="ru">Prolog-правило country_genre/2: countryOf o hasGenre</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/lab1/games#sameCountryAs -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#sameCountryAs">
         <rdfs:domain rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
         <rdfs:range rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
         <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#developedBy"/>
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#developerOf"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#madeIn"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#countryOf"/>
         </owl:propertyChainAxiom>
-        <rdfs:comment xml:lang="ru">Prolog-правило same_developer/2: developedBy o developerOf (в OWL нет условия G1 != G2, поэтому игра связана и сама с собой)</rdfs:comment>
+        <rdfs:comment xml:lang="ru">Prolog-правило same_country/2: madeIn o countryOf (в OWL нет условия G1 != G2, поэтому игра связана и сама с собой)</rdfs:comment>
     </owl:ObjectProperty>
     
 
 
-    <!-- http://www.semanticweb.org/lab1/games#worksInGenre -->
+    <!-- Classes -->
 
-    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/lab1/games#worksInGenre">
-        <rdfs:domain rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
-        <rdfs:range rdf:resource="http://www.semanticweb.org/lab1/games#Genre"/>
-        <owl:propertyChainAxiom rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#developerOf"/>
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#hasGenre"/>
-        </owl:propertyChainAxiom>
-        <rdfs:comment xml:lang="ru">Prolog-правило developer_genre/2: developerOf o hasGenre</rdfs:comment>
-    </owl:ObjectProperty>
+    <!-- http://www.semanticweb.org/lab1/games#CasualGame -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#CasualGame">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#NoStoryGame"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/lab1/games#hasGenre"/>
+                        <owl:someValuesFrom>
+                            <owl:Class>
+                                <owl:oneOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#puzzle"/>
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#sandbox"/>
+                                </owl:oneOf>
+                            </owl:Class>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:comment xml:lang="ru">Prolog-правило casual_game/1: NoStoryGame and (hasGenre some {puzzle, sandbox})</rdfs:comment>
+    </owl:Class>
     
 
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Classes
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
+    <!-- http://www.semanticweb.org/lab1/games#Country -->
 
-    
-
-
-    <!-- http://www.semanticweb.org/lab1/games#Developer -->
-
-    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#Developer">
+    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#Country">
         <owl:disjointWith rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
         <owl:disjointWith rdf:resource="http://www.semanticweb.org/lab1/games#Genre"/>
-        <rdfs:comment xml:lang="ru">Prolog: developer/1</rdfs:comment>
+        <rdfs:comment xml:lang="ru">Prolog: country/1</rdfs:comment>
     </owl:Class>
     
 
@@ -112,29 +120,22 @@
     
 
 
-    <!-- http://www.semanticweb.org/lab1/games#GameForFriends -->
+    <!-- http://www.semanticweb.org/lab1/games#GameDevCountry -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#GameForFriends">
+    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#GameDevCountry">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#MultiplayerGame"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#Country"/>
                     <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://www.semanticweb.org/lab1/games#hasGenre"/>
-                        <owl:someValuesFrom>
-                            <owl:Class>
-                                <owl:oneOf rdf:parseType="Collection">
-                                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#sandbox"/>
-                                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#shooter"/>
-                                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#sports"/>
-                                </owl:oneOf>
-                            </owl:Class>
-                        </owl:someValuesFrom>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/lab1/games#countryOf"/>
+                        <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">2</owl:minQualifiedCardinality>
+                        <owl:onClass rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
                     </owl:Restriction>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
-        <rdfs:comment xml:lang="ru">Prolog-правило good_for_friends/1: MultiplayerGame and (hasGenre some {sports, shooter, sandbox})</rdfs:comment>
+        <rdfs:comment xml:lang="ru">Prolog-правило game_dev_country/1: Country and (countryOf min 2 Game)</rdfs:comment>
     </owl:Class>
     
 
@@ -147,41 +148,20 @@
     
 
 
-    <!-- http://www.semanticweb.org/lab1/games#MultiGameStudio -->
+    <!-- http://www.semanticweb.org/lab1/games#NoStoryGame -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#MultiGameStudio">
+    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#NoStoryGame">
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#Developer"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://www.semanticweb.org/lab1/games#developerOf"/>
-                        <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">2</owl:minQualifiedCardinality>
-                        <owl:onClass rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-                    </owl:Restriction>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#Game"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="http://www.semanticweb.org/lab1/games#StoryGame"/>
+                    </owl:Class>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>
-        <rdfs:comment xml:lang="ru">Prolog-правило multi_game_studio/1: Developer and (developerOf min 2 Game)</rdfs:comment>
-    </owl:Class>
-    
-
-
-    <!-- http://www.semanticweb.org/lab1/games#MultiplayerGame -->
-
-    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#MultiplayerGame">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:oneOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#dark_souls"/>
-                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#doom"/>
-                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#fifa23"/>
-                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#minecraft"/>
-                </owl:oneOf>
-            </owl:Class>
-        </owl:equivalentClass>
-        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <rdfs:comment xml:lang="ru">Prolog: multiplayer/1. Список игр перечислен явно (закрыт), чтобы работало отрицание в SinglePlayerGame.</rdfs:comment>
+        <rdfs:comment xml:lang="ru">Prolog-правило no_story/1: Game and not StoryGame</rdfs:comment>
     </owl:Class>
     
 
@@ -214,47 +194,31 @@
     
 
 
-    <!-- http://www.semanticweb.org/lab1/games#SinglePlayerGame -->
+    <!-- http://www.semanticweb.org/lab1/games#StoryGame -->
 
-    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#SinglePlayerGame">
+    <owl:Class rdf:about="http://www.semanticweb.org/lab1/games#StoryGame">
         <owl:equivalentClass>
             <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#Game"/>
-                    <owl:Class>
-                        <owl:complementOf rdf:resource="http://www.semanticweb.org/lab1/games#MultiplayerGame"/>
-                    </owl:Class>
-                </owl:intersectionOf>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#cyberpunk2077"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#dark_souls"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#doom"/>
+                    <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#witcher3"/>
+                </owl:oneOf>
             </owl:Class>
         </owl:equivalentClass>
-        <rdfs:comment xml:lang="ru">Prolog-правило single_player/1: Game and not MultiplayerGame</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
+        <rdfs:comment xml:lang="ru">Prolog: has_story/1. Список игр перечислен явно (закрыт), чтобы работало отрицание в NoStoryGame.</rdfs:comment>
     </owl:Class>
     
 
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // Individuals
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
+    <!-- Individuals -->
 
-    
+    <!-- http://www.semanticweb.org/lab1/games#canada -->
 
-
-    <!-- http://www.semanticweb.org/lab1/games#alexey_pajitnov -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#alexey_pajitnov">
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/lab1/games#cd_projekt_red -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#cd_projekt_red">
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#canada">
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
     </owl:NamedIndividual>
     
 
@@ -263,9 +227,10 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#cyberpunk2077">
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#StoryGame"/>
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#OpenWorldGame"/>
-        <developedBy rdf:resource="http://www.semanticweb.org/lab1/games#cd_projekt_red"/>
         <hasGenre rdf:resource="http://www.semanticweb.org/lab1/games#rpg"/>
+        <madeIn rdf:resource="http://www.semanticweb.org/lab1/games#poland"/>
     </owl:NamedIndividual>
     
 
@@ -274,9 +239,9 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#dark_souls">
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#MultiplayerGame"/>
-        <developedBy rdf:resource="http://www.semanticweb.org/lab1/games#fromsoftware"/>
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#StoryGame"/>
         <hasGenre rdf:resource="http://www.semanticweb.org/lab1/games#rpg"/>
+        <madeIn rdf:resource="http://www.semanticweb.org/lab1/games#japan"/>
     </owl:NamedIndividual>
     
 
@@ -285,17 +250,9 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#doom">
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#MultiplayerGame"/>
-        <developedBy rdf:resource="http://www.semanticweb.org/lab1/games#id_software"/>
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#StoryGame"/>
         <hasGenre rdf:resource="http://www.semanticweb.org/lab1/games#shooter"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/lab1/games#ea_sports -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#ea_sports">
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
+        <madeIn rdf:resource="http://www.semanticweb.org/lab1/games#usa"/>
     </owl:NamedIndividual>
     
 
@@ -304,25 +261,16 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#fifa23">
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#MultiplayerGame"/>
-        <developedBy rdf:resource="http://www.semanticweb.org/lab1/games#ea_sports"/>
         <hasGenre rdf:resource="http://www.semanticweb.org/lab1/games#sports"/>
+        <madeIn rdf:resource="http://www.semanticweb.org/lab1/games#canada"/>
     </owl:NamedIndividual>
     
 
 
-    <!-- http://www.semanticweb.org/lab1/games#fromsoftware -->
+    <!-- http://www.semanticweb.org/lab1/games#japan -->
 
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#fromsoftware">
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/lab1/games#id_software -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#id_software">
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#japan">
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
     </owl:NamedIndividual>
     
 
@@ -331,18 +279,17 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#minecraft">
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#MultiplayerGame"/>
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#OpenWorldGame"/>
-        <developedBy rdf:resource="http://www.semanticweb.org/lab1/games#mojang"/>
         <hasGenre rdf:resource="http://www.semanticweb.org/lab1/games#sandbox"/>
+        <madeIn rdf:resource="http://www.semanticweb.org/lab1/games#sweden"/>
     </owl:NamedIndividual>
     
 
 
-    <!-- http://www.semanticweb.org/lab1/games#mojang -->
+    <!-- http://www.semanticweb.org/lab1/games#poland -->
 
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#mojang">
-        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Developer"/>
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#poland">
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
     </owl:NamedIndividual>
     
 
@@ -387,12 +334,36 @@
     
 
 
+    <!-- http://www.semanticweb.org/lab1/games#sweden -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#sweden">
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/lab1/games#tetris -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#tetris">
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
-        <developedBy rdf:resource="http://www.semanticweb.org/lab1/games#alexey_pajitnov"/>
         <hasGenre rdf:resource="http://www.semanticweb.org/lab1/games#puzzle"/>
+        <madeIn rdf:resource="http://www.semanticweb.org/lab1/games#ussr"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/lab1/games#usa -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#usa">
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/lab1/games#ussr -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#ussr">
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Country"/>
     </owl:NamedIndividual>
     
 
@@ -401,47 +372,37 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/lab1/games#witcher3">
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#Game"/>
+        <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#StoryGame"/>
         <rdf:type rdf:resource="http://www.semanticweb.org/lab1/games#OpenWorldGame"/>
-        <developedBy rdf:resource="http://www.semanticweb.org/lab1/games#cd_projekt_red"/>
         <hasGenre rdf:resource="http://www.semanticweb.org/lab1/games#rpg"/>
+        <madeIn rdf:resource="http://www.semanticweb.org/lab1/games#poland"/>
     </owl:NamedIndividual>
     
 
 
-    <!-- 
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //
-    // General axioms
-    //
-    ///////////////////////////////////////////////////////////////////////////////////////
-     -->
+    <!-- General axioms -->
 
     <rdf:Description>
         <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDifferent"/>
         <owl:distinctMembers rdf:parseType="Collection">
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#alexey_pajitnov"/>
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#cd_projekt_red"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#canada"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#cyberpunk2077"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#dark_souls"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#doom"/>
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#ea_sports"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#fifa23"/>
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#fromsoftware"/>
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#id_software"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#japan"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#minecraft"/>
-            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#mojang"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#poland"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#puzzle"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#rpg"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#sandbox"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#shooter"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#sports"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#sweden"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#tetris"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#usa"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#ussr"/>
             <rdf:Description rdf:about="http://www.semanticweb.org/lab1/games#witcher3"/>
         </owl:distinctMembers>
     </rdf:Description>
 </rdf:RDF>
-
-
-
-<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
-
